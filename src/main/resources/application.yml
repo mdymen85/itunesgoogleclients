@@ -1,0 +1,11 @@
+
+application:
+  lockmanager:
+    type: redis
+    port: ${REDIS_PORT:6379}
+    host: ${REDIS_HOST:localhost}
+    release-timeout: 5000
+    redis:
+      cache-name: circuitBreaker
+       
+   
