@@ -8,4 +8,7 @@ application:
     redis:
       cache-name: circuitBreaker
        
+spring:
+  profiles:
+    active: resilience4j
    

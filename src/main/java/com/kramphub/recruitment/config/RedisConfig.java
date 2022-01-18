@@ -1,4 +1,4 @@
-package com.kramphub.config;
+package com.kramphub.recruitment.config;
 
 import org.redisson.Redisson;
 import org.redisson.api.RedissonClient;

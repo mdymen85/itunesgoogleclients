@@ -23,13 +23,14 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 public class SagaService {
 
+	private final CircuitBreakerService circuitBreakerService;
 	private final LoadService loadService;
 	
 	//TODO: Needed to see that an exception from one client dont need to crash de application, because
 	//de other client can respond
 	public ResponseListFunDTO get(String text) throws InterruptedException, ExecutionException {
 		
-		var responseITunes = loadService.getITunes(text);
+		var responseITunes = circuitBreakerService.getITunes(text);
 		var responseGoogleApi = loadService.getGoogleApi(text);
 		
 		var returnITunes = toResponsesFun(responseITunes);
