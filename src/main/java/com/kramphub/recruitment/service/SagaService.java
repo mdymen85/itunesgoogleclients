@@ -39,27 +39,57 @@ public class SagaService {
 	
 	@Transactional(timeout = 60)
 	public ResponseListFunDTO get(String text) throws InterruptedException, ExecutionException, TimeoutException {
+				
+		var wrapper = this.geITunes(text);
+		this.getGoogle(text, wrapper);
 		
-//		var responseITunes = loadService.getITunes(text);
-//		var responseGoogleApi = loadService.getGoogleApi(text);
-//				
-//		
-		CompletableFuture<ResponsesFeign> responseITunes =  CompletableFuture.supplyAsync(() -> loadService.getITunes(text));
-		CompletableFuture<GoogleApiDTO> responseGoogleApi =  CompletableFuture.supplyAsync(() -> loadService.getGoogleApi(text));
-//		
+		ResponseListFunDTO returnITunes = null;
 		
-		CompletableFuture.allOf(responseITunes, responseGoogleApi).join();
+		if (wrapper.getITunesException() == null) {
+			returnITunes = toResponsesFun(wrapper.getResponseFeign());	
+		}
 		
-		var returnITunes = toResponsesFun(responseITunes.get());
-		var returnTotal = returnITunes.addSet(toResponsesFun(responseGoogleApi.get()));
+		if (returnITunes == null) {
+			return toResponsesFun(wrapper.getGoogleApiDTO());
+		}
 		
-//		
-//		var resultITunes = itunes.get();
-//		var resultGoogleApi = googleApi.get();
+		if (wrapper.getGoogleApiException() != null) {
+			return returnITunes;
+		}
 		
-		//TODO: here i need to combine the response from the itunes and googleapi
-		return returnTotal;
-		
+		return returnITunes.addSet(toResponsesFun(wrapper.getGoogleApiDTO()));
+				
+	}
+	
+	private WrapperResultClientCall geITunes(String text) {
+		try {
+			var response = loadService.getITunes(text);
+			return WrapperResultClientCall
+					.builder()
+					.responseFeign(response)
+					.build();
+		}
+		catch (Exception e) {
+			return WrapperResultClientCall
+					.builder()
+					.iTunesException(e)
+					.build();
+		}
+	}
+	
+	private WrapperResultClientCall getGoogle(String text, WrapperResultClientCall wrapper) {
+		try {
+			var googleApiDTO = loadService.getGoogleApi(text);			
+			wrapper.setGoogleApiDTO(googleApiDTO);
+			return wrapper;
+		}
+		catch (Exception e) {
+			if (wrapper.getITunesException() != null) {
+				throw e;
+			}
+			wrapper.setGoogleApiException(e);
+			return wrapper;
+		}
 	}
 	
 	private ResponseListFunDTO toResponsesFun(GoogleApiDTO googleApiDTO) {
