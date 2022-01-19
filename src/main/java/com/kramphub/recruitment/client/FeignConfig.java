@@ -5,6 +5,7 @@ import org.springframework.context.annotation.Configuration;
 
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 
 import feign.codec.Decoder;
 import feign.codec.Encoder;
@@ -27,7 +28,8 @@ public class FeignConfig {
 	  @Bean
 	  public ObjectMapper getModelMapper() {
 		return new ObjectMapper()
-		  .configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
+				.registerModule(new JavaTimeModule())
+				.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
 	  }
 	
 }

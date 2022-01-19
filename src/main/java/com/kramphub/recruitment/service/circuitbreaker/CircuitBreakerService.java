@@ -1,4 +1,4 @@
-package com.kramphub.recruitment.service;
+package com.kramphub.recruitment.service.circuitbreaker;
 
 import java.util.function.Supplier;
 
@@ -11,8 +11,10 @@ import org.springframework.stereotype.Service;
 import com.kramphub.recruitment.client.GoogleApiClient;
 import com.kramphub.recruitment.client.ITunesClient;
 import com.kramphub.recruitment.client.ResponsesFeign;
+import com.kramphub.recruitment.exception.FeignCallNotPermittedException;
 import com.kramphub.recruitment.exception.UnavailableException;
 
+import io.github.resilience4j.circuitbreaker.CallNotPermittedException;
 import io.github.resilience4j.circuitbreaker.CircuitBreaker;
 import io.github.resilience4j.circuitbreaker.CircuitBreakerRegistry;
 import lombok.RequiredArgsConstructor;
@@ -22,34 +24,26 @@ import lombok.extern.slf4j.Slf4j;
 @Service
 @RequiredArgsConstructor
 @Slf4j
-public class CircuitBreakerService {
-
-	private final ITunesClient itunesClient;
-	private final GoogleApiClient googleApiClient;	
+public class CircuitBreakerService<T> {
+	
 	private final CircuitBreakerRegistry registry;
 	
-	@Value("${application.max-search.number:5}")
-	private Integer limit;
-
-	public ResponsesFeign getITunes(String text) {
-    	
+	public T get(String text, String circuit, Supplier<T> supplier) {
     	try {
     		
-    		CircuitBreaker circuitBreaker = registry.circuitBreaker("itunes"); 
+    		CircuitBreaker circuitBreaker = registry.circuitBreaker(circuit); 
     		
-    		Supplier<ResponsesFeign> supplier = () -> itunesClient.get(text, limit.intValue()); 
+    		Supplier<T> decoratedProductsSupplier = circuitBreaker.decorateSupplier(supplier);
     		
-    		Supplier<ResponsesFeign> decoratedProductsSupplier = circuitBreaker.decorateSupplier(supplier);
+    		return decoratedProductsSupplier.get();    		
     		
-    		return decoratedProductsSupplier.get();
-    		
-    		//return itunesClient.get(text, limit.intValue());
-    		
+    	}
+    	catch (CallNotPermittedException e) {
+    		throw new FeignCallNotPermittedException(circuit);
     	}
     	catch (Exception e) {
-    		throw e;
-    	}
-		
+    		throw new UnavailableException();
+    	}		
 	}
 	
 }

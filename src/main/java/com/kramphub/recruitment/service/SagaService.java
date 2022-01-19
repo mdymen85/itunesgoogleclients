@@ -2,18 +2,24 @@ package com.kramphub.recruitment.service;
 
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
 import java.util.stream.Collectors;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.kramphub.recruitment.client.GoogleApiDTO;
 import com.kramphub.recruitment.client.GoogleApiDTOs;
+import com.kramphub.recruitment.client.ITunesClient;
 import com.kramphub.recruitment.client.ResponseFeignGoogleBooksAPI;
 import com.kramphub.recruitment.client.ResponseFeignITunesDTO;
 import com.kramphub.recruitment.client.ResponsesFeign;
 import com.kramphub.recruitment.dto.ResponseFunDTO;
 import com.kramphub.recruitment.dto.ResponseListFunDTO;
 import com.kramphub.recruitment.dto.TypeResponse;
+import com.kramphub.recruitment.service.circuitbreaker.CircuitBreakerService;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -22,25 +28,31 @@ import lombok.extern.slf4j.Slf4j;
 @RequiredArgsConstructor
 @Slf4j
 public class SagaService {
-
-	private final CircuitBreakerService circuitBreakerService;
+	
 	private final LoadService loadService;
 	
-	//TODO: Needed to see that an exception from one client dont need to crash de application, because
-	//de other client can respond
-	public ResponseListFunDTO get(String text) throws InterruptedException, ExecutionException {
+	@Value("${application.max-search.number:5}")
+	private Integer limit;
+	
+	@Value("${application.timeout.number:30}")
+	private Long timeout;
+	
+	@Transactional(timeout = 60)
+	public ResponseListFunDTO get(String text) throws InterruptedException, ExecutionException, TimeoutException {
 		
-		var responseITunes = circuitBreakerService.getITunes(text);
-		var responseGoogleApi = loadService.getGoogleApi(text);
-		
-		var returnITunes = toResponsesFun(responseITunes);
-		var returnTotal = returnITunes.addSet(toResponsesFun(responseGoogleApi));
-		
+//		var responseITunes = loadService.getITunes(text);
+//		var responseGoogleApi = loadService.getGoogleApi(text);
+//				
 //		
-//		CompletableFuture<Void> itunes =  CompletableFuture.runAsync(() -> loadService.getITunes(text));
-//		CompletableFuture<Void> googleApi =  CompletableFuture.runAsync(() -> loadService.getGoogleApi(text));
+		CompletableFuture<ResponsesFeign> responseITunes =  CompletableFuture.supplyAsync(() -> loadService.getITunes(text));
+		CompletableFuture<GoogleApiDTO> responseGoogleApi =  CompletableFuture.supplyAsync(() -> loadService.getGoogleApi(text));
 //		
-//		CompletableFuture.allOf(itunes, googleApi).join();
+		
+		CompletableFuture.allOf(responseITunes, responseGoogleApi).join();
+		
+		var returnITunes = toResponsesFun(responseITunes.get());
+		var returnTotal = returnITunes.addSet(toResponsesFun(responseGoogleApi.get()));
+		
 //		
 //		var resultITunes = itunes.get();
 //		var resultGoogleApi = googleApi.get();
