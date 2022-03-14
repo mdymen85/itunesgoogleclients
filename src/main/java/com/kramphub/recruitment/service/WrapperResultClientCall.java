@@ -1,7 +1,7 @@
 package com.kramphub.recruitment.service;
 
-import com.kramphub.recruitment.client.GoogleApiDTO;
-import com.kramphub.recruitment.client.ResponsesFeign;
+import com.kramphub.recruitment.client.feign.GoogleApiDTO;
+import com.kramphub.recruitment.client.feign.ResponsesFeign;
 import com.kramphub.recruitment.exception.BaseClassException;
 
 import lombok.Builder;

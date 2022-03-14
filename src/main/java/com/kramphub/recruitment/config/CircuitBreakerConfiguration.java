@@ -5,6 +5,9 @@ import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Profile;
 
+import com.kramphub.recruitment.client.feign.ResponsesFeign;
+import com.kramphub.recruitment.service.circuitbreaker.CircuitBreakerService;
+
 import io.github.resilience4j.circuitbreaker.CircuitBreakerConfig;
 import io.github.resilience4j.circuitbreaker.CircuitBreakerConfig.SlidingWindowType;
 import io.github.resilience4j.circuitbreaker.CircuitBreakerRegistry;
@@ -24,6 +27,11 @@ public class CircuitBreakerConfiguration {
 				  .build();
 		CircuitBreakerRegistry registry = CircuitBreakerRegistry.of(config); 
 		return registry;
+	}
+	
+	@Bean
+	public CircuitBreakerService<ResponsesFeign> get(CircuitBreakerRegistry registry) {
+		return new CircuitBreakerService<ResponsesFeign>(registry);
 	}
 	
 }

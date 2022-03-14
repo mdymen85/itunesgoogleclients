@@ -7,13 +7,14 @@ import org.springframework.retry.annotation.Backoff;
 import org.springframework.retry.annotation.Retryable;
 import org.springframework.stereotype.Service;
 
-import com.kramphub.recruitment.client.GoogleApiClient;
-import com.kramphub.recruitment.client.GoogleApiDTO;
-import com.kramphub.recruitment.client.ITunesClient;
-import com.kramphub.recruitment.client.ResponseFeignITunesDTO;
-import com.kramphub.recruitment.client.ResponsesFeign;
+import com.kramphub.recruitment.client.feign.GoogleApiClient;
+import com.kramphub.recruitment.client.feign.GoogleApiDTO;
+import com.kramphub.recruitment.client.feign.ITunesClient;
+import com.kramphub.recruitment.client.feign.ResponseFeignITunesDTO;
+import com.kramphub.recruitment.client.feign.ResponsesFeign;
 import com.kramphub.recruitment.dto.ResponseListFunDTO;
 import com.kramphub.recruitment.exception.UnavailableException;
+import com.kramphub.recruitment.service.circuitbreaker.CircuitBreakerFactory;
 import com.kramphub.recruitment.service.circuitbreaker.CircuitBreakerService;
 
 import lombok.RequiredArgsConstructor;
@@ -29,6 +30,8 @@ public class LoadService {
 
 	private final CircuitBreakerService<ResponsesFeign> circuitBreakerITunesService;
 	private final CircuitBreakerService<GoogleApiDTO> circuitBreakerGoogleService;
+	
+	private final CircuitBreakerFactory circuitBreakerFactory;
 
 	private final ITunesClient itunesClient;
 	private final GoogleApiClient googleApiClient;	
@@ -38,7 +41,9 @@ public class LoadService {
 
 	public ResponsesFeign getITunes(String text) {
     	
-    	return circuitBreakerITunesService.get(text, ITUNES_CIRCUIT, () -> itunesClient.get(text, limit.intValue()));    
+		return circuitBreakerFactory.getCircuitBreakerITunes().get(text, ITUNES_CIRCUIT, () -> itunesClient.get(text, limit.intValue()));
+		
+    	//return circuitBreakerITunesService.get(text, ITUNES_CIRCUIT, () -> itunesClient.get(text, limit.intValue()));    
 		
 	}
 

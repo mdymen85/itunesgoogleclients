@@ -8,9 +8,9 @@ import org.springframework.retry.annotation.Backoff;
 import org.springframework.retry.annotation.Retryable;
 import org.springframework.stereotype.Service;
 
-import com.kramphub.recruitment.client.GoogleApiClient;
-import com.kramphub.recruitment.client.ITunesClient;
-import com.kramphub.recruitment.client.ResponsesFeign;
+import com.kramphub.recruitment.client.feign.GoogleApiClient;
+import com.kramphub.recruitment.client.feign.ITunesClient;
+import com.kramphub.recruitment.client.feign.ResponsesFeign;
 import com.kramphub.recruitment.exception.FeignCallNotPermittedException;
 import com.kramphub.recruitment.exception.UnavailableException;
 

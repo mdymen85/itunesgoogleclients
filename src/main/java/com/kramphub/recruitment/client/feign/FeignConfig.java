@@ -1,4 +1,4 @@
-package com.kramphub.recruitment.client;
+package com.kramphub.recruitment.client.feign;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -23,13 +23,6 @@ public class FeignConfig {
 	  @Bean
 	  public Encoder feignEncoder() {
 	    return new JacksonEncoder();
-	  }
-	  
-	  @Bean
-	  public ObjectMapper getModelMapper() {
-		return new ObjectMapper()
-				.registerModule(new JavaTimeModule())
-				.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
-	  }
+	  }	
 	
 }

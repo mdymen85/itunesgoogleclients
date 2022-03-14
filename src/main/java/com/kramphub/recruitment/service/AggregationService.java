@@ -10,12 +10,12 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.kramphub.recruitment.client.GoogleApiDTO;
-import com.kramphub.recruitment.client.GoogleApiDTOs;
-import com.kramphub.recruitment.client.ITunesClient;
-import com.kramphub.recruitment.client.ResponseFeignGoogleBooksAPI;
-import com.kramphub.recruitment.client.ResponseFeignITunesDTO;
-import com.kramphub.recruitment.client.ResponsesFeign;
+import com.kramphub.recruitment.client.feign.GoogleApiDTO;
+import com.kramphub.recruitment.client.feign.GoogleApiDTOs;
+import com.kramphub.recruitment.client.feign.ITunesClient;
+import com.kramphub.recruitment.client.feign.ResponseFeignGoogleBooksAPI;
+import com.kramphub.recruitment.client.feign.ResponseFeignITunesDTO;
+import com.kramphub.recruitment.client.feign.ResponsesFeign;
 import com.kramphub.recruitment.dto.ResponseFunDTO;
 import com.kramphub.recruitment.dto.ResponseListFunDTO;
 import com.kramphub.recruitment.dto.TypeResponse;
@@ -27,7 +27,7 @@ import lombok.extern.slf4j.Slf4j;
 @Service
 @RequiredArgsConstructor
 @Slf4j
-public class SagaService {
+public class AggregationService {
 	
 	private final LoadService loadService;
 	

@@ -1,4 +1,4 @@
-package com.kramphub.recruitment.client;
+package com.kramphub.recruitment.client.feign;
 
 import lombok.Data;
 
