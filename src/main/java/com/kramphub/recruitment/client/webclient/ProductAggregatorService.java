@@ -6,6 +6,7 @@ import com.kramphub.recruitment.client.webclient.google.GoogleApiDTO;
 import com.kramphub.recruitment.client.webclient.google.GoogleWebClientService;
 import com.kramphub.recruitment.client.webclient.itunes.ItunesResults;
 import com.kramphub.recruitment.client.webclient.itunes.ItunesWebClientService;
+import com.kramphub.recruitment.service.LoadService;
 
 import lombok.RequiredArgsConstructor;
 import reactor.core.publisher.Mono;
@@ -17,10 +18,12 @@ public class ProductAggregatorService {
 
 	private final ItunesWebClientService itunesService;
 	private final GoogleWebClientService googleService;
+	private final LoadService loadService;
 	
 	public Mono<ResultAggregate> get(String term, Integer limit) {
 		return Mono.zip(
-				this.itunesService.getItunes(term, limit),
+				this.loadService.getITunes(term),
+//				this.itunesService.getItunes(term, limit),
 				this.googleService.getGoogle(term, limit)
 			)
 		.map(this::combine);

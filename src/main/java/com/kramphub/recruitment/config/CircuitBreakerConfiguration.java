@@ -22,7 +22,7 @@ public class CircuitBreakerConfiguration {
 		CircuitBreakerConfig config = CircuitBreakerConfig
 				  .custom()
 				  .slidingWindowType(SlidingWindowType.COUNT_BASED)
-				  .slidingWindowSize(10)
+				  .slidingWindowSize(2)
 				  .failureRateThreshold(70.0f)
 				  .build();
 		CircuitBreakerRegistry registry = CircuitBreakerRegistry.of(config); 

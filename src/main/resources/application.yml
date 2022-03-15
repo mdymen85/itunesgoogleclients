@@ -7,8 +7,15 @@ application:
     release-timeout: 5000
     redis:
       cache-name: circuitBreaker
+  itunes:
+    url: https://itunes.aapple.com/search?term={term}&limit={limit}
+  google:
+    url: https://www.googleapis.com/books/v1/volumes?q={term}&maxResults={limit}
+  
        
 spring:
   profiles:
     active: resilience4j
+
+
    

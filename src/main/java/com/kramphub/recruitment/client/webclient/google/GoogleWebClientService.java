@@ -3,6 +3,7 @@ package com.kramphub.recruitment.client.webclient.google;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.ExchangeStrategies;
@@ -17,12 +18,15 @@ import reactor.core.publisher.Mono;
 @RequiredArgsConstructor
 public class GoogleWebClientService {
 	
+	@Value("${application.google.url:}")
+	private String url;
+	
     public Mono<GoogleApiDTO> getGoogle(String term, Integer limit) {
     	
     	var params = Map.of("term",term,"limit", String.valueOf(limit));
     	
 		var client = WebClient.builder()
-			.baseUrl("https://www.googleapis.com/books/v1/volumes?q={term}&maxResults={limit}")
+			.baseUrl(url)
 			.defaultUriVariables(params)
 			.build();
     	
@@ -30,7 +34,8 @@ public class GoogleWebClientService {
 			.accept(MediaType.ALL)
 			.retrieve()
 			.bodyToMono(GoogleApiDTO.class)
-			.log();
+			.log()
+			.onErrorReturn(new GoogleApiDTO());
     }
 	
 }

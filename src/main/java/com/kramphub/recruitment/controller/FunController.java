@@ -4,6 +4,7 @@ import java.net.URLEncoder;
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 import java.util.List;
+import java.util.function.Supplier;
 
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.HttpStatus;
@@ -30,8 +31,12 @@ import com.kramphub.recruitment.client.webclient.google.GoogleWebClientService;
 import com.kramphub.recruitment.client.webclient.itunes.ItunesResults;
 import com.kramphub.recruitment.client.webclient.itunes.ItunesWebClientService;
 import com.kramphub.recruitment.dto.ResponseListFunDTO;
+import com.kramphub.recruitment.exception.FeignCallNotPermittedException;
 import com.kramphub.recruitment.service.AggregationService;
 
+import io.github.resilience4j.circuitbreaker.CircuitBreaker;
+import io.github.resilience4j.circuitbreaker.CircuitBreakerRegistry;
+import io.vavr.control.Try;
 import lombok.RequiredArgsConstructor;
 import reactor.core.publisher.Mono;
 
@@ -46,8 +51,30 @@ public class FunController {
 	private final ItunesWebClientService itunesClient;
 	private final GoogleWebClientService googleClient;
 	private final ProductAggregatorService aggregatorService;
+	private final CircuitBreakerRegistry register;
 	
+	@RequestMapping(path = "/v1/circuit/{text}", method = RequestMethod.GET)
+	public String circuit(@PathVariable String text) throws Exception {
+		
+		CircuitBreaker circuitBreaker = register
+				  .circuitBreaker("name");
+		
+		Supplier<String> decoratedSupplier = CircuitBreaker
+			    .decorateSupplier(circuitBreaker, this::doSomething);
 
+		return decoratedSupplier.get();
+		
+//			String result = Try.ofSupplier(decoratedSupplier)
+//			    .recover(throwable -> "Hello from Recovery").get();
+			
+//		return result;
+		
+	}
+	
+	public String doSomething() {
+		throw new FeignCallNotPermittedException("pepito");
+	}
+	
 	@RequestMapping(path = "/v1/aggregate/{text}", method = RequestMethod.GET)
 	public ResponseEntity<Mono<ResultAggregate>> aggregator(@PathVariable String text) throws Exception {
 		var result = aggregatorService.get(text, 5);

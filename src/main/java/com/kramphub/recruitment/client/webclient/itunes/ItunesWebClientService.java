@@ -3,7 +3,9 @@ package com.kramphub.recruitment.client.webclient.itunes;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.MediaType;
+import org.springframework.retry.annotation.CircuitBreaker;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.ExchangeStrategies;
 import org.springframework.web.reactive.function.client.WebClient;
@@ -17,6 +19,9 @@ import reactor.core.publisher.Mono;
 @RequiredArgsConstructor
 public class ItunesWebClientService {
 
+	@Value("${application.itunes.url:}")
+	private String url;
+	
 	@Qualifier("webclientStrategy")
 	private final ExchangeStrategies strategies;
 	
@@ -26,7 +31,7 @@ public class ItunesWebClientService {
     	
 		var client = WebClient.builder()
 			.exchangeStrategies(strategies)
-			.baseUrl("https://itunes.apple.com/search?term={term}&limit={limit}")
+			.baseUrl(url)
 			.defaultUriVariables(params)
 			.build();
     	
@@ -34,7 +39,8 @@ public class ItunesWebClientService {
 			.accept(MediaType.ALL)
 			.retrieve()
 			.bodyToMono(ItunesResults.class)
-			.log();
+			.log()
+			.onErrorReturn(new ItunesResults());
     }
 
 }
