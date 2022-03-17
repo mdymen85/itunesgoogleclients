@@ -4,8 +4,12 @@ import java.util.List;
 import java.util.Set;
 import java.util.TreeSet;
 
+import com.kramphub.recruitment.dto.ResponseFunDTO.ResponseFunDTOBuilder;
+
+import lombok.Builder;
 import lombok.Data;
 
+@Deprecated
 @Data
 public class ResponseListFunDTO {
 

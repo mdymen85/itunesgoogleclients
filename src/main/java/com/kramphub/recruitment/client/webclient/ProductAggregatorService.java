@@ -1,5 +1,6 @@
 package com.kramphub.recruitment.client.webclient;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import com.kramphub.recruitment.client.webclient.google.GoogleApiDTO;
@@ -8,17 +9,24 @@ import com.kramphub.recruitment.client.webclient.itunes.ItunesResults;
 import com.kramphub.recruitment.client.webclient.itunes.ItunesWebClientService;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import reactor.core.publisher.Mono;
 import reactor.util.function.Tuple2;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class ProductAggregatorService {
 
 	private final ItunesWebClientService itunesService;
-	private final GoogleWebClientService googleService;
+	private final GoogleWebClientService googleService;	
 	
-	public Mono<ResultAggregate> get(String term, Integer limit) {
+	@Value("${application.max-search.number:5}")
+	private Integer limit;
+	
+	public Mono<ResultAggregate> get(String term) {
+		
+		log.info("Starting search of term: {}.", term);
 		
 		return Mono.zip(
 				this.itunesService.getItunes(term, limit),

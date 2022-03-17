@@ -3,6 +3,7 @@ package com.kramphub.recruitment.dto;
 import lombok.Builder;
 import lombok.Data;
 
+@Deprecated
 @Data
 @Builder
 public class ResponseFunDTO {

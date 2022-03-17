@@ -28,12 +28,16 @@ public class GoogleWebClientService {
 	@CircuitBreaker(name = "googleapi", fallbackMethod = "fallback")
     public Mono<GoogleApiDTO> getGoogle(String term, Integer limit) {
     	
+		log.info("Searching in Google API, term: {} with limit: {}.", term, limit);
+		
     	var params = Map.of("term",term,"limit", String.valueOf(limit));
     	
 		var client = WebClient.builder()
 			.baseUrl(url)
 			.defaultUriVariables(params)
 			.build();
+		
+		log.info("Google API url: {}", url);
     	
 		return client.get()
 			.accept(MediaType.ALL)
@@ -44,7 +48,7 @@ public class GoogleWebClientService {
     }
     
 	private Mono<GoogleApiDTO> fallback(String term, Integer limit, Throwable throwable) {
-		log.error("Message: {}", throwable.getMessage(), throwable);
+		log.error("Circuit breaker active: {}", throwable.getMessage(), throwable);
 		return Mono.just(new GoogleApiDTO());
 	}
 	

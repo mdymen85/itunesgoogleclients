@@ -32,7 +32,7 @@ public class ItunesWebClientService {
 	@CircuitBreaker(name = "itunes", fallbackMethod = "fallback")
     public Mono<ItunesResults> getItunes(String term, Integer limit) {
     	
-		log.info("Entrou {}/{}", term, limit);
+		log.info("Searching in Itunes, term: {} with limit: {}.", term, limit);
 		
     	var params = Map.of("term",term,"limit", String.valueOf(limit));
     	
@@ -41,6 +41,8 @@ public class ItunesWebClientService {
 			.baseUrl(url)
 			.defaultUriVariables(params)
 			.build();
+		
+		log.info("Itunes url: {}", url);
     	
 		return client.get()
 			.accept(MediaType.ALL)
@@ -51,7 +53,7 @@ public class ItunesWebClientService {
     }
 
 	private Mono<ItunesResults> fallback(String term, Integer limit, Throwable throwable) {
-		log.error("Message: {}", throwable.getMessage(), throwable);
+		log.error("Circuit breaker active: {}", throwable.getMessage(), throwable);
 		return Mono.just(new ItunesResults());
 	}
 
