@@ -33,6 +33,7 @@ import com.kramphub.recruitment.client.webclient.itunes.ItunesWebClientService;
 import com.kramphub.recruitment.dto.ResponseListFunDTO;
 import com.kramphub.recruitment.exception.FeignCallNotPermittedException;
 import com.kramphub.recruitment.service.AggregationService;
+import com.kramphub.recruitment.service.circuitbreaker.CircuitBreakerService;
 
 import io.github.resilience4j.circuitbreaker.CircuitBreaker;
 import io.github.resilience4j.circuitbreaker.CircuitBreakerRegistry;
@@ -53,26 +54,26 @@ public class FunController {
 	private final ProductAggregatorService aggregatorService;
 	private final CircuitBreakerRegistry register;
 	
+	private final CircuitBreakerService<String> cservice;
+	
 	@RequestMapping(path = "/v1/circuit/{text}", method = RequestMethod.GET)
 	public String circuit(@PathVariable String text) throws Exception {
-		
-		CircuitBreaker circuitBreaker = register
-				  .circuitBreaker("name");
-		
-		Supplier<String> decoratedSupplier = CircuitBreaker
-			    .decorateSupplier(circuitBreaker, this::doSomething);
 
-		return decoratedSupplier.get();
+		return cservice.get("text", "name", this::doSomething);
 		
-//			String result = Try.ofSupplier(decoratedSupplier)
-//			    .recover(throwable -> "Hello from Recovery").get();
-			
-//		return result;
+//		CircuitBreaker circuitBreaker = register
+//				  .circuitBreaker("name");
+//		
+//		Supplier<String> decoratedSupplier = CircuitBreaker
+//			    .decorateSupplier(circuitBreaker, this::doSomething);
+//
+//		return decoratedSupplier.get();
+//		
 		
 	}
 	
 	public String doSomething() {
-		throw new FeignCallNotPermittedException("pepito");
+		throw new IllegalMonitorStateException("XX");
 	}
 	
 	@RequestMapping(path = "/v1/aggregate/{text}", method = RequestMethod.GET)

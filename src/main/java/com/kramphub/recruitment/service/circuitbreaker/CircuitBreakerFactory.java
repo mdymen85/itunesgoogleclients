@@ -11,6 +11,7 @@ import com.kramphub.recruitment.config.AppConfig;
 import lombok.RequiredArgsConstructor;
 import reactor.core.publisher.Mono;
 
+@Deprecated
 @Component
 @RequiredArgsConstructor
 public class CircuitBreakerFactory {

@@ -7,6 +7,7 @@ import com.kramphub.recruitment.exception.BaseClassException;
 import lombok.Builder;
 import lombok.Data;
 
+@Deprecated
 @Data
 @Builder
 public class WrapperResultClientCall {

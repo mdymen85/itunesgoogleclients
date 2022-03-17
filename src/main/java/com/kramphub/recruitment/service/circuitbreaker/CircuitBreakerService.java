@@ -11,6 +11,7 @@ import org.springframework.stereotype.Service;
 import com.kramphub.recruitment.client.feign.GoogleApiClient;
 import com.kramphub.recruitment.client.feign.ITunesClient;
 import com.kramphub.recruitment.client.feign.ResponsesFeign;
+import com.kramphub.recruitment.exception.BusinessError;
 import com.kramphub.recruitment.exception.FeignCallNotPermittedException;
 import com.kramphub.recruitment.exception.UnavailableException;
 
@@ -20,7 +21,7 @@ import io.github.resilience4j.circuitbreaker.CircuitBreakerRegistry;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
-//@Profile("resilience4j")
+@Deprecated
 @Service
 @RequiredArgsConstructor
 @Slf4j
@@ -39,9 +40,15 @@ public class CircuitBreakerService<T> {
     		
     	}
     	catch (CallNotPermittedException e) {
-    		throw new FeignCallNotPermittedException(circuit);
+    		
+    		log.error("Call not permitted: ", e);
+    		
+    		throw new BusinessError();
     	}
     	catch (Exception e) {
+    		
+    		log.error("Exception: ", e);
+    		
     		throw new UnavailableException();
     	}		
 	}

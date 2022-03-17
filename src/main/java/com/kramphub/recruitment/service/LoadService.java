@@ -23,6 +23,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import reactor.core.publisher.Mono;
 
+@Deprecated
 @Service
 @Slf4j
 @RequiredArgsConstructor

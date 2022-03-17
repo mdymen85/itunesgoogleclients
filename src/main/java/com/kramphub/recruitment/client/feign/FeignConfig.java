@@ -12,6 +12,7 @@ import feign.codec.Encoder;
 import feign.jackson.JacksonDecoder;
 import feign.jackson.JacksonEncoder;
 
+@Deprecated
 @Configuration
 public class FeignConfig {
 

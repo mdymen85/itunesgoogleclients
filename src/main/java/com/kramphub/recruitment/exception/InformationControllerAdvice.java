@@ -24,6 +24,15 @@ public class InformationControllerAdvice {
 				.getResponseErrorObject(); 
 	}
 	
+	@ExceptionHandler(BusinessError.class) 
+	public ResponseEntity<ResponseErrorObject> buildingBasicInformationException(BusinessError error) {			
+		return new ResponseError(error.getCode(), 
+				messageSource.getMessage(error.getCode(), null, Locale.ENGLISH), 
+				HttpStatus.BAD_REQUEST)
+				.getResponseErrorObject(); 
+	}
+	
+	
 	@ExceptionHandler(FeignCallNotPermittedException.class) 
 	public ResponseEntity<ResponseErrorObject> buildingBasicInformationException(FeignCallNotPermittedException error) {			
 		return new ResponseError(error.getCode(), 

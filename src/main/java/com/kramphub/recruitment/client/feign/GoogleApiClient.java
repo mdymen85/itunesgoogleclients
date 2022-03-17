@@ -5,6 +5,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
+@Deprecated
 @FeignClient(value ="googleapi", url = "https://www.googleapis.com/books", configuration = GoogleApiClientConfig.class)
 public interface GoogleApiClient {
 
