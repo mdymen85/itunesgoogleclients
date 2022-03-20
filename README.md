@@ -3,7 +3,7 @@
 
 ## Introduction
 
-I had an assesment from the company Kramp Hub in Netherlans, that holpfully i passed:
+I had an assesment from the company Kramp Hub in Netherlans, and holpfully i passed:
 
 *Using Java framework / libraries build a service, that will accept a request with text parameter on input. It will return maximum of 5 books and maximum of 5 albums that are related to the input term. The response elements will only contain title, authors(/artists) and information whether it's a book or an album. For albums please use the iTunes API. For books please use Google Books API. Sort the result by title alphabetically. Make sure the software is production-ready from resilience, stability and performance point of view. The stability of the downstream service may not be affected by the stability of the upstream services. Results originating from one upstream service (and its stability /performance) may not affect the results originating from the other upstream service.*
 
@@ -73,10 +73,10 @@ What is the gain? So, as i told before, one of the APIs doesn`t answer properly,
 To use this, i add this in the pom file:
 
  ```
-		<dependency>
-		    <groupId>org.springframework.boot</groupId>
-		    <artifactId>spring-boot-starter-aop</artifactId>
-		</dependency>	
+	<dependency>
+	    <groupId>org.springframework.boot</groupId>
+	    <artifactId>spring-boot-starter-aop</artifactId>
+	</dependency>	
 		
 	<dependency>
 	    <groupId>io.github.resilience4j</groupId>
