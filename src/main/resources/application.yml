@@ -1,16 +1,9 @@
-
 application:
   lockmanager:
-    type: redis
-    port: ${REDIS_PORT:6379}
-    host: ${REDIS_HOST:localhost}
-    release-timeout: 5000
-    redis:
-      cache-name: circuitBreaker
   itunes:
-    url: ${ITUNES_URL:https://itunes.apple.com/search?term={term}&limit={limit}}
+    url: ${ITUNES_URL:https://itunes.apple.com}
   google:
-    url: ${GOOGLE_URL:https://www.googleapis.com/books/v1/volumes?q={term}&maxResults={limit}}
+    url: ${GOOGLE_URL:https://www.googleapis.com}
   
        
 spring:

@@ -6,7 +6,7 @@ import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
+//import org.springframework.transaction.annotation.Transactional;
 
 import com.kramphub.recruitment.client.feign.GoogleApiDTO;
 import com.kramphub.recruitment.client.feign.GoogleApiDTOs;
@@ -33,7 +33,7 @@ public class AggregationService {
 	@Value("${application.timeout.number:30}")
 	private Long timeout;
 	
-	@Transactional(timeout = 60)
+//	@Transactional(timeout = 60)
 	public ResponseListFunDTO get(String text) throws InterruptedException, ExecutionException, TimeoutException {
 				
 		var wrapper = this.geITunes(text);

@@ -17,5 +17,19 @@ spec:
       containers:
         - name: webclient-itunesgoogle
           image: mdymen85/webclient-itunes-google:latest
+          envFrom:
+            - configMapRef:
+                name: webclient-configmap
+#          env:
+#            - name: ITUNES_URL
+#              valueFrom:
+#                configMapKeyRef:
+#                  name: webclient-configmap
+#                  key: ITUNES_URL
+#            - name: GOOGLE_URL
+#              valueFrom:
+#                configMapKeyRef:
+#                  name: webclient-configmap
+#                  key: GOOGLE_URL                  
           ports:
             - containerPort: 8080

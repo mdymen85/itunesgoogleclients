@@ -112,3 +112,7 @@ Of course i did a simple Docker file in order to lend people play with images an
 
 My first tentative of making this project, was using **FeignClient**. Thats why, if you search between the classes, you will see a lot of classes **@Deprecated**. Because after some time i prefer, rather than Feign, using WebFlux, because of the **aggregaton pattern** facility. 
 I realized that with **WebFlux** i didnt need to control as much things that i need to control with Feign. But there is a different between them because, that **Webflux** its **reactive programming** and **Feign** is not. In such case, i didnt evaluate much time about those differences, but  i realized that with **Webflux**, it was really simplier. 
+
+
+
+kubectl exec -it nginx bash

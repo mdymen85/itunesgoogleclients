@@ -1,0 +1,7 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: webclient-configmap
+data:
+  ITUNES_URL: https://itunes.apple.com
+  GOOGLE_URL: https://www.googleapis.com
