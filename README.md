@@ -108,6 +108,14 @@ So, in error cases, when the circuit its running, the fallback method will retur
 
 Of course i did a simple Docker file in order to lend people play with images an so on. I added some kubernetes file, and using the file **run.sh** in the folder **kubernetes**, the developer can test the application inside a cluster.
 
+## Testing
+
+It is possible to test doing a GET to the aggregation endpoint as:
+
+```
+curl --location --request GET '<kubernetes-minikube-ip>:<my-service-port>/api/v1/aggregate/<term-to-search>'
+```
+
 ## Feign Client
 
 My first tentative of making this project, was using **FeignClient**. Thats why, if you search between the classes, you will see a lot of classes **@Deprecated**. Because after some time i prefer, rather than Feign, using WebFlux, because of the **aggregaton pattern** facility. 
