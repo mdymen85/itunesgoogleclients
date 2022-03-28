@@ -20,11 +20,11 @@ I had an assesment from the company **Kramp Hub** in Netherlands.
 
 As almost all my projects i use lombok in order to simplify some classes to avoid code verbosity. To use it in the project, you need to write this in **pom.xml** file:
 ```
-		<dependency>
-		    <groupId>org.projectlombok</groupId>
-		    <artifactId>lombok</artifactId>
-		    <scope>provided</scope>
-		</dependency>	
+<dependency>
+    <groupId>org.projectlombok</groupId>
+    <artifactId>lombok</artifactId>
+    <scope>provided</scope>
+</dependency>	
 ```
 
 ## Controller Advice
