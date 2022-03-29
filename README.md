@@ -31,7 +31,7 @@ As almost all my projects i use lombok in order to simplify some classes to avoi
 
 To centralize exception treatments i use controller advice, so i can manage in one unique place the exception that are thrown all over the system.
 
-## Webflux
+## Webflux - aggregation pattern-
 
 This is the key of this development.  I had to make two calls to differents APIs that no one of this APIs depends on the other one. So if one of them fails the other musn't nned to be affected. To achive this, i used **webflux**. 
 
